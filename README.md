@@ -1,4 +1,4 @@
-# brainstorm-conformal-drkg
+# brainstorm-conformal-drkp
 
 important papers
 - https://stanford.edu/~qysun/distributional-robust-kelly-final.pdf
