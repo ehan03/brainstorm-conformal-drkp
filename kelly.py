@@ -45,6 +45,19 @@ class BaseKelly:
 
         return R
 
+    def calculate_optimal_wagers(self) -> np.ndarray:
+        raise NotImplementedError
+
+    def __call__(self) -> Tuple[np.ndarray, np.ndarray]:
+        fractions = self.calculate_optimal_wagers()
+        wagers = self.fraction * self.current_bankroll * fractions[:-1]
+        wagers_rounded = np.round(wagers, 2)
+        wagers_clipped = np.where(wagers_rounded < self.min_bet, 0, wagers_rounded)
+
+        red_wagers, blue_wagers = wagers_clipped[::2], wagers_clipped[1::2]
+
+        return red_wagers, blue_wagers
+
 
 class NaiveKelly(BaseKelly):
     def __init__(
@@ -91,16 +104,6 @@ class NaiveKelly(BaseKelly):
                 return b.value
         except:
             return self.no_bet
-
-    def __call__(self) -> Tuple[np.ndarray, np.ndarray]:
-        fractions = self.calculate_optimal_wagers()
-        wagers = self.fraction * self.current_bankroll * fractions[:-1]
-        wagers_rounded = np.round(wagers, 2)
-        wagers_clipped = np.where(wagers_rounded < self.min_bet, 0, wagers_rounded)
-
-        red_wagers, blue_wagers = wagers_clipped[::2], wagers_clipped[1::2]
-
-        return red_wagers, blue_wagers
 
 
 class DistributionalRobustKelly(BaseKelly):
@@ -164,13 +167,3 @@ class DistributionalRobustKelly(BaseKelly):
                 return b.value
         except:
             return self.no_bet
-
-    def __call__(self) -> Tuple[np.ndarray, np.ndarray]:
-        fractions = self.calculate_optimal_wagers()
-        wagers = self.fraction * self.current_bankroll * fractions[:-1]
-        wagers_rounded = np.round(wagers, 2)
-        wagers_clipped = np.where(wagers_rounded < self.min_bet, 0, wagers_rounded)
-
-        red_wagers, blue_wagers = wagers_clipped[::2], wagers_clipped[1::2]
-
-        return red_wagers, blue_wagers
